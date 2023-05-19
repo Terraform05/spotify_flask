@@ -43,10 +43,7 @@ def login():
 
 @app.route('/callback')
 def callback():
-    code = request.args.get('code')
-    token_info = oauth.get_access_token(code)
-
-    # Save the token information in the session
+    token_info = oauth.get_access_token(request.args.get('code'))
     session['token_info'] = token_info
     return redirect(url_for('profile'))
 
@@ -67,26 +64,9 @@ def profile():
     user_id = user_data['id']
     profile_image = user_data['images'][0]['url']
     profile = [display_name, user_url, followers, user_id, profile_image]
-
-    """
-    # current saved tracks
-    results = sp.current_user_saved_tracks()
-
-    for idx, item in enumerate(results['items']):
-        track = item['track']
-        print(idx, track['artists'][0]['name'], " – ", track['name'])
-
-        # tracks = results['items']
-    #file_output(pformat(results))
-        
-    # current top tracks
-    results = sp.current_user_top_tracks()
-    file_output(pformat(results))
-    """
     
     # user playlists
     playlists_dict = {}
-
     playlists = sp.user_playlists(user_id)
     while playlists:
         for pl in playlists['items']:
